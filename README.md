@@ -1,1 +1,1 @@
-# budget-point-tracker
+# Budget and Points Tracker
