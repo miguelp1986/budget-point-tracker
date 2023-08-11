@@ -1,4 +1,4 @@
-# Use the latest stable Python release
+# Base image
 FROM python:3.11.4
 
 # Set environment variables
@@ -23,4 +23,4 @@ COPY . /app
 EXPOSE $PORT
 
 # Run FastAPI application with uvicorn
-CMD uvicorn budget_points_tracker:app --host $HOST --port $PORT
+CMD uvicorn budget_points_tracker:app --host "${HOST}" --port "${PORT}" --reload
