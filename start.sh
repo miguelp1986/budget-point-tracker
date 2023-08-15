@@ -3,13 +3,9 @@
 # Get the directory path of this file
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Define the path to your .env file and Docker compose file relative to the script directory
-ENV_FILE=".env"
-DOCKER_COMPOSE_FILE="docker-compose.yml"
-
-# Construct the full path to .env and Docker compose file
+# Define the name of your .env file
+ENV_FILE=".env" 
 FULL_ENV_PATH="$SCRIPT_DIR/$ENV_FILE"
-FULL_DOCKER_COMPOSE_PATH="$SCRIPT_DIR/$DOCKER_COMPOSE_FILE"
 
 # Check if the .env file exists
 if [ ! -f "$FULL_ENV_PATH" ]; then
@@ -17,8 +13,12 @@ if [ ! -f "$FULL_ENV_PATH" ]; then
   exit 1
 fi
 
-# Load the environment variables
+# Load the .env file
 source "$FULL_ENV_PATH"
+
+# Construct the full path to the Docker compose file
+DOCKER_COMPOSE_FILE="docker-compose.yml"
+FULL_DOCKER_COMPOSE_PATH="$SCRIPT_DIR/$DOCKER_COMPOSE_FILE"
 
 # Check if the Docker Compose file exists
 if [ ! -f "$FULL_DOCKER_COMPOSE_PATH" ]; then
@@ -26,11 +26,18 @@ if [ ! -f "$FULL_DOCKER_COMPOSE_PATH" ]; then
   exit 1
 fi
 
-# Check if the specific containers are running. If so, tear them down.
-if docker-compose -f "$FULL_DOCKER_COMPOSE_PATH" ps -q; then
-  echo "Existing containers found. Tearing them down..."
-  docker-compose -f "$FULL_DOCKER_COMPOSE_PATH" down
-fi
+# Stop container if it is running
+docker stop ${DOCKER_IMAGE}:${DOCKER_TAG}  # Run only if the container is running
 
-# Run docker-compose up
-docker-compose -f "$FULL_DOCKER_COMPOSE_PATH" up --build
+# Remove previously-ran containers
+docker rm -f ${DOCKER_IMAGE}:${DOCKER_TAG}  # TODO: check if this exists before running
+
+# Remove old images
+docker rmi -f $(docker images -q ${DOCKER_IMAGE}:${DOCKER_TAG})  # TODO: check if this exists before running
+
+# Build Docker images and start the containers
+docker compose -f "$FULL_DOCKER_COMPOSE_PATH" up --build
+
+# Run tests in Docker container
+# docker compose -f "$FULL_DOCKER_COMPOSE_PATH" exec -T <container_name> <command>
+
