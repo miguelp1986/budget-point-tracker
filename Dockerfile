@@ -23,4 +23,4 @@ COPY . /app
 EXPOSE $PORT
 
 # Run FastAPI application with uvicorn
-CMD uvicorn budget_points_tracker:app --host "${HOST}" --port "${PORT}" --reload
+CMD uvicorn api:app --app-dir src/api --host "${HOST}" --port "${PORT}" --reload
