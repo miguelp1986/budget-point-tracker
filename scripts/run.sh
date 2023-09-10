@@ -13,17 +13,8 @@ if [ ! -f "$full_docker_compose_path" ]; then
   exit 1
 fi
 
-# # Stop container if it is running
-# docker stop ${docker_image}:${docker_tag}  # Run only if the container is running
+# Build and start the containers
+docker compose -f "$full_docker_compose_path" up -d --build
 
-# # Remove previously-ran containers
-# docker rm -f ${docker_image}:${docker_tag}  # TODO: check if this exists before running
-
-# # Remove old images
-# docker rmi -f $(docker images -q ${docker_image}:${docker_tag})  # TODO: check if this exists before running
-
-# Build Docker images (this will rebuild only if there's a change)
-docker compose -f "$full_docker_compose_path" build
-
-# Run the containers
-docker compose -f "$full_docker_compose_path" up
+# Run tests
+docker compose -f "$full_docker_compose_path" exec web pytest /app/tests
