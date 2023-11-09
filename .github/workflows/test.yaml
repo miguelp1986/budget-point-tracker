@@ -3,6 +3,7 @@ name: Test
 on:
   push:
     branches:
+      - '**'
       - '!main'
   pull_request:
     branches:
@@ -22,3 +23,4 @@ jobs:
           cd $GITHUB_WORKSPACE/scripts
           ./run.sh
           ./test.sh
+
