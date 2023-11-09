@@ -20,7 +20,4 @@ jobs:
       -
         name: Testing
         run: |
-          cd $GITHUB_WORKSPACE/scripts
-          ./run.sh
-          ./test.sh
-
+          ./$GITHUB_WORKSPACE/scripts/test.sh
