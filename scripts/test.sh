@@ -13,5 +13,7 @@ if [ ! -f "$full_docker_compose_path" ]; then
   exit 1
 fi
 
-# Build and start the containers
-docker compose -f "$full_docker_compose_path" up -d --build
+# Run tests
+docker compose -f "$full_docker_compose_path" exec web flake8 /app
+docker compose -f "$full_docker_compose_path" exec web black /app --check
+docker compose -f "$full_docker_compose_path" exec web pytest /app/tests
