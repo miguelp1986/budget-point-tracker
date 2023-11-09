@@ -2,7 +2,7 @@
 
 current_dir=$(dirname "$0")
 parent_dir=$(dirname "$current_dir")
-env_file=".env" 
+env_file=".env"
 full_env_path="$parent_dir/$env_file"
 
 # Check if the .env file exists
