@@ -8,17 +8,17 @@ on:
     branches:
       - main
 
-  jobs:
-    testing:
-      name: Testing
-      runs-on: ubuntu-latest
-      steps:
-        - 
-          name: Checkout
-          uses: actions/checkout@v4
-        -
-          name: Testing
-          run: |
-            cd $GITHUB_WORKSPACE/scripts
-            ./run.sh
-            ./test.sh
+jobs:
+  testing:
+    name: Testing
+    runs-on: ubuntu-latest
+    steps:
+      - 
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Testing
+        run: |
+          cd $GITHUB_WORKSPACE/scripts
+          ./run.sh
+          ./test.sh
