@@ -15,6 +15,3 @@ fi
 
 # Build and start the containers
 docker compose -f "$full_docker_compose_path" up -d --build
-
-# Run tests
-docker compose -f "$full_docker_compose_path" exec web pytest /app/tests
