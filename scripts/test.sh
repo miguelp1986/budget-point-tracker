@@ -6,4 +6,5 @@ source scripts/run.sh
 # Run tests
 docker compose -f "$full_docker_compose_path" exec web flake8 /app
 docker compose -f "$full_docker_compose_path" exec web black /app --check
+docker compose -f "$full_docker_compose_path" exec pg_client ./create_test_db.sh
 docker compose -f "$full_docker_compose_path" exec web pytest /app/tests

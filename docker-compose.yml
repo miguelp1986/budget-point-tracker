@@ -12,8 +12,8 @@ services:
       - "${FASTAPI_PORT}:${FASTAPI_PORT}"
     depends_on:
       - db
-    environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:${DB_PASSWORD}@db:${DB_PORT}/${DB_NAME}
+    env_file:
+      - .env
 
   db:
     image: postgres:16.0
@@ -21,10 +21,20 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+  
+  pg_client:
+    image: postgres:16.0
+    depends_on:
+      - db
+    env_file:
+      - .env
+    volumes:
+      - ./scripts/create_test_db.sh:/create_test_db.sh
+    entrypoint: ["tail", "-f", "/dev/null"]
 
 volumes:
   postgres_data:
