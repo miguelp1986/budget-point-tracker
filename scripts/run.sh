@@ -14,4 +14,4 @@ if [ ! -f "$full_docker_compose_path" ]; then
 fi
 
 # Build and start the containers
-docker compose -f "$full_docker_compose_path" up -d --build
+docker compose -f "$full_docker_compose_path" up --build
