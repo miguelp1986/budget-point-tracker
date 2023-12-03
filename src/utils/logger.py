@@ -33,7 +33,7 @@ def _create_logger(
 
     # Create formatter and add it to handlers
     formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s", "%Y-%m-%d %H:%M:%S"
     )
     fh.setFormatter(formatter)
     ch.setFormatter(formatter)

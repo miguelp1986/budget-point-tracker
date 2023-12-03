@@ -1,10 +1,11 @@
 from fastapi import FastAPI
-from logger import setup_logger
+
+from src.utils.logger import get_logger
 
 app = FastAPI()
 
 # Create a logger
-logger = setup_logger()
+logger = get_logger()
 
 
 @app.get("/")
