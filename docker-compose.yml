@@ -33,8 +33,9 @@ services:
     env_file:
       - .env
     volumes:
-      - ./scripts/create_test_db.sh:/create_test_db.sh
-    entrypoint: ["tail", "-f", "/dev/null"]
+      - ./scripts/create_test_db.sh:/scripts/create_test_db.sh
+      - ./scripts/delete_test_db.sh:/scripts/delete_test_db.sh
+    entrypoint: ["tail", "-f", "/dev/null"]  # keep container running
 
 volumes:
   postgres_data:
