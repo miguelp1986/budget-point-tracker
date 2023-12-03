@@ -3,11 +3,12 @@ Tests for DB models
 """
 
 import os
+from datetime import datetime
 
 import pytest
 from sqlmodel import Session, SQLModel, create_engine, select
 
-from src.db.models import Account, User
+from src.db.models import Account, Budget, User
 
 # Use test database
 TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
@@ -95,6 +96,8 @@ def test_create_account(session):
         password="password",
         email="user@account.com",
     )
+    session.refresh(test_user)
+
     # Create an account
     test_account = _create_add_commit_test_account(
         session=session,
@@ -149,3 +152,95 @@ def _create_add_commit_test_account(
     session.add(test_account)
     session.commit()
     return test_account
+
+
+def test_create_budget(session):
+    """
+    Test creating a budget.
+    """
+    # Create a user
+    test_user = _create_add_commit_test_user(
+        session=session,
+        username="user_for_budget",
+        password="password",
+        email="email.com",
+    )
+
+    session.refresh(test_user)
+
+    # Create a budget
+    test_budget = _create_add_commit_test_budget(
+        session=session,
+        user_id=test_user.user_id,
+        name="test budget",
+        amount=1000.0,
+        start_date=datetime(2021, 1, 1),
+        end_date=datetime(2021, 1, 31),
+    )
+
+    session.refresh(test_budget)
+    # Check that the budget was created
+    assert test_budget.budget_id is not None
+
+
+def test_read_budget(session):
+    """
+    Test reading a budget from the database.
+    """
+    # Create a user
+    test_user = _create_add_commit_test_user(
+        session=session,
+        username="user_for_budget",
+        password="password",
+        email="email.com",
+    )
+
+    session.refresh(test_user)
+
+    # Create a budget
+    test_budget = _create_add_commit_test_budget(
+        session=session,
+        user_id=test_user.user_id,
+        name="test budget",
+        amount=1000.0,
+        start_date=datetime(2021, 1, 1),
+        end_date=datetime(2021, 1, 31),
+    )
+
+    session.refresh(test_budget)
+
+    # Read the budget back from the database
+    result = session.exec(
+        select(Budget).where(Budget.budget_id == test_budget.budget_id)
+    )
+    budget = result.first()
+
+    # Assert that a budget was retrieved
+    assert budget is not None, "No budget found in the database"
+    # Assert that the retrieved budget matches the created budget
+    if budget:
+        assert budget.name == "test budget", "Budget name does not match"
+        assert budget.amount == 1000.0, "Budget amount does not match"
+
+
+def _create_add_commit_test_budget(
+    session: Session,
+    user_id: int,
+    name: str,
+    amount: float,
+    start_date: datetime,
+    end_date: datetime,
+) -> Budget:
+    """
+    Create a test budget.
+    """
+    test_budget = Budget(
+        user_id=user_id,
+        name=name,
+        amount=amount,
+        start_date=start_date,
+        end_date=end_date,
+    )
+    session.add(test_budget)
+    session.commit()
+    return test_budget
