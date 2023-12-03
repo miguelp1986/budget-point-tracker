@@ -5,61 +5,67 @@ Tests for DB models
 import os
 
 import pytest
-import pytest_asyncio
-from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy.orm import sessionmaker
-from sqlmodel import SQLModel, select
-from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlmodel import Session, SQLModel, create_engine, select
 
 from src.db.models import User
 
 # Use test database
 TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
-engine = create_async_engine(TEST_DATABASE_URL, echo=True)
-
-# Sessionmaker for async session
-AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+engine = create_engine(TEST_DATABASE_URL, echo=True)
 
 
-@pytest_asyncio.fixture(name="session", scope="function")
-async def session_fixture():
+@pytest.fixture(name="session", scope="function")
+def session_fixture():
     """
-    Create a clean database on each test case
+    Create a clean database for each test case.
     """
-    async with engine.begin() as conn:
-        await conn.run_sync(SQLModel.metadata.create_all)
+    # Create all database tables
+    SQLModel.metadata.create_all(engine)
 
-    async with AsyncSessionLocal() as session:
+    # Connect to the database
+    with Session(engine) as session:
         yield session
 
-    async with engine.begin() as conn:
-        await conn.run_sync(SQLModel.metadata.drop_all)
+    # Drop all database tables
+    SQLModel.metadata.drop_all(engine)
 
 
-@pytest.mark.asyncio
-async def test_create_user(session):
+def test_create_user(session):
     """
-    Test that a user can be created
+    Test that a user can be created.
     """
-    async with session.begin():
-        user = User(
-            username="testuser", password="testpassword", email="test@example.com"
-        )
-        session.add(user)
-        await session.commit()
-        await session.refresh(user)
-        assert user.id is not None
+    # Create a user
+    test_user = User(
+        username="testuser", password="testpassword", email="test@example.com"
+    )
+    session.add(test_user)
+    session.commit()
+    session.refresh(test_user)
+
+    # Check that the user was created
+    assert test_user.user_id is not None
 
 
-@pytest.mark.asyncio
-async def test_read_user(session):
+def test_read_user(session):
     """
-    Test that a user can be read
+    Test that a user can be read.
     """
-    async with session.begin():
-        result = await session.execute(
-            select(User).where(User.username == "testuser")
-        ).first()
-        user = result.scalars().first()
-        assert user.username == "testuser"
-        assert user.email == "test@example.com"
+    # Create and commit a new user
+    test_user = User(
+        username="testuser2", password="testpassword2", email="test2@example.com"
+    )
+    session.add(test_user)
+    session.commit()
+
+    # Read the user back from the database
+    result = session.exec(select(User).where(User.username == "testuser2"))
+    user = result.first()
+
+    # Assert that a user was retrieved
+    assert user is not None, "No user found in the database"
+
+    # Proceed with further assertions only if the user is not None
+    if user:
+        # Assert that the retrieved user matches the created user
+        assert user.username == "testuser2", "Username does not match"
+        assert user.email == "test2@example.com", "Email does not match"
