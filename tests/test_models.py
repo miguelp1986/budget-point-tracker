@@ -8,7 +8,7 @@ from datetime import datetime
 import pytest
 from sqlmodel import Session, SQLModel, create_engine, select
 
-from src.db.models import Account, Budget, User
+from src.db.models import Account, Budget, LoyaltyProgram, Transaction, User
 
 # Use test database
 TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
@@ -244,3 +244,245 @@ def _create_add_commit_test_budget(
     session.add(test_budget)
     session.commit()
     return test_budget
+
+
+def test_create_transaction(session):
+    """
+    Test creating a transaction.
+    """
+    # Create a user
+    test_user = _create_add_commit_test_user(
+        session=session,
+        username="user_for_transaction",
+        password="password",
+        email="email.com",
+    )
+
+    session.refresh(test_user)
+
+    # Create an account
+    test_account = _create_add_commit_test_account(
+        session=session,
+        user_id=test_user.user_id,
+        account_type="checking",
+        balance=1000.0,
+    )
+
+    session.refresh(test_account)
+
+    # Create a budget
+    test_budget = _create_add_commit_test_budget(
+        session=session,
+        user_id=test_user.user_id,
+        name="test budget",
+        amount=1000.0,
+        start_date=datetime(2021, 1, 1),
+        end_date=datetime(2021, 1, 31),
+    )
+
+    session.refresh(test_budget)
+
+    # Create a transaction
+    test_transaction = _create_add_commit_test_transaction(
+        session=session,
+        user_id=test_user.user_id,
+        account_id=test_account.account_id,
+        budget_id=test_budget.budget_id,
+        date=datetime(2021, 1, 1),
+        amount=100.0,
+        description="test transaction",
+    )
+
+    session.refresh(test_transaction)
+    # Check that the transaction was created
+    assert test_transaction.transaction_id is not None
+
+
+def test_read_transaction(session):
+    """
+    Test reading a transaction from the database.
+    """
+    # Create a user
+    test_user = _create_add_commit_test_user(
+        session=session,
+        username="user_for_transaction",
+        password="password",
+        email="email.com",
+    )
+
+    session.refresh(test_user)
+
+    # Create an account
+    test_account = _create_add_commit_test_account(
+        session=session,
+        user_id=test_user.user_id,
+        account_type="checking",
+        balance=1000.0,
+    )
+
+    session.refresh(test_account)
+
+    # Create a budget
+    test_budget = _create_add_commit_test_budget(
+        session=session,
+        user_id=test_user.user_id,
+        name="test budget",
+        amount=1000.0,
+        start_date=datetime(2021, 1, 1),
+        end_date=datetime(2021, 1, 31),
+    )
+
+    session.refresh(test_budget)
+
+    # Create a transaction
+    test_transaction = _create_add_commit_test_transaction(
+        session=session,
+        user_id=test_user.user_id,
+        account_id=test_account.account_id,
+        budget_id=test_budget.budget_id,
+        date=datetime(2021, 1, 1),
+        amount=100.0,
+        description="test transaction",
+    )
+
+    session.refresh(test_transaction)
+
+    # Read the transaction back from the database
+    result = session.exec(
+        select(Transaction).where(
+            Transaction.transaction_id == test_transaction.transaction_id
+        )
+    )
+    transaction = result.first()
+
+    # Assert that a transaction was retrieved
+    assert transaction is not None, "No transaction found in the database"
+    # Assert that the retrieved transaction matches the created transaction
+    if transaction:
+        assert transaction.date == datetime(
+            2021, 1, 1
+        ), "Transaction date does not match"
+        assert transaction.amount == 100.0, "Transaction amount does not match"
+        assert (
+            transaction.description == "test transaction"
+        ), "Transaction description does not match"
+
+
+def _create_add_commit_test_transaction(
+    session: Session,
+    user_id: int,
+    account_id: int,
+    budget_id: int,
+    date: datetime,
+    amount: float,
+    description: str,
+) -> Budget:
+    """
+    Create a test transaction.
+    """
+    test_transaction = Transaction(
+        user_id=user_id,
+        account_id=account_id,
+        budget_id=budget_id,
+        date=date,
+        amount=amount,
+        description=description,
+    )
+    session.add(test_transaction)
+    session.commit()
+    return test_transaction
+
+
+def test_create_loyalty_program(session):
+    """
+    Test creating a loyalty program.
+    """
+    # Create a user
+    test_user = _create_add_commit_test_user(
+        session=session,
+        username="user_for_loyalty_program",
+        password="password",
+        email="email.com",
+    )
+
+    session.refresh(test_user)
+
+    # Create a loyalty program
+    test_loyalty_program = _create_add_commit_test_loyalty_program(
+        session=session,
+        user_id=test_user.user_id,
+        program_name="test loyalty program",
+        points=1000,
+        last_updated_date=datetime(2021, 1, 1),
+    )
+
+    session.refresh(test_loyalty_program)
+    # Check that the loyalty program was created
+    assert test_loyalty_program.loyalty_id is not None
+
+
+def test_read_loyalty_program(session):
+    """
+    Test reading a loyalty program from the database.
+    """
+    # Create a user
+    test_user = _create_add_commit_test_user(
+        session=session,
+        username="user_for_loyalty_program",
+        password="password",
+        email="email.com",
+    )
+
+    session.refresh(test_user)
+
+    # Create a loyalty program
+    test_loyalty_program = _create_add_commit_test_loyalty_program(
+        session=session,
+        user_id=test_user.user_id,
+        program_name="test loyalty program",
+        points=1000,
+        last_updated_date=datetime(2021, 1, 1),
+    )
+
+    session.refresh(test_loyalty_program)
+
+    # Read the loyalty program back from the database
+    result = session.exec(
+        select(LoyaltyProgram).where(
+            LoyaltyProgram.loyalty_id == test_loyalty_program.loyalty_id
+        )
+    )
+    loyalty_program = result.first()
+
+    # Assert that a loyalty program was retrieved
+    assert loyalty_program is not None, "No loyalty program found in the database"
+    # Assert that the retrieved loyalty program matches the created loyalty program
+    if loyalty_program:
+        assert (
+            loyalty_program.program_name == "test loyalty program"
+        ), "Loyalty program name does not match"
+        assert loyalty_program.points == 1000, "Loyalty program points do not match"
+        assert loyalty_program.last_updated_date == datetime(
+            2021, 1, 1
+        ), "Loyalty program last updated date does not match"
+
+
+def _create_add_commit_test_loyalty_program(
+    session: Session,
+    user_id: int,
+    program_name: str,
+    points: int,
+    last_updated_date: datetime,
+) -> Budget:
+    """
+    Create a test loyalty program.
+    """
+    test_loyalty_program = LoyaltyProgram(
+        user_id=user_id,
+        program_name=program_name,
+        points=points,
+        last_updated_date=last_updated_date,
+    )
+    session.add(test_loyalty_program)
+    session.commit()
+    return test_loyalty_program
