@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from src.logger import get_logger
+from src.utils.logger import get_logger
 
 app = FastAPI()
 
