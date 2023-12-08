@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# This script sets GitHub secrets from an .env file
+# Sets GitHub secrets from an .env file
 while IFS= read -r line; do
     # Skip empty lines and lines starting with #
     if [[ -z "$line" || "$line" == \#* ]]; then
