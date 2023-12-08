@@ -30,6 +30,9 @@ jobs:
           TEST_DOCKER_IMAGE: ${{ secrets.TEST_DOCKER_IMAGE }}
           TEST_DOCKER_TAG: ${{ secrets.TEST_DOCKER_TAG }}
         run: |
+          # Change directory to project root
+          cd $GITHUB_WORKSPACE
+          
           # Create .env file
           echo "TEST_FASTAPI_HOST=${TEST_FASTAPI_HOST}" >> .env
           echo "TEST_FASTAPI_PORT=${TEST_FASTAPI_PORT}" >> .env
