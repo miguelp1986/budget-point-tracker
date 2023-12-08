@@ -20,11 +20,8 @@ jobs:
       -
         name: Run Tests
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
-          # Login to GitHub with gh CLI
-          gh auth login --with-token <<< "$GH_TOKEN"
-
           # Create .env file from GitHub secrets
           source scripts/create_env_from_secrets.sh
 
