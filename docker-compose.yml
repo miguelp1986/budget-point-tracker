@@ -2,14 +2,14 @@ version: '3.8'
 
 services:
   web:
-    image: "${DOCKER_IMAGE}:${DOCKER_TAG}"
+    image: "${TEST_DOCKER_IMAGE}:${TEST_DOCKER_TAG}"
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        - FASTAPI_PORT
+        - TEST_FASTAPI_PORT
     ports:
-      - "${FASTAPI_PORT}:${FASTAPI_PORT}"
+      - "${TEST_FASTAPI_PORT}:${TEST_FASTAPI_PORT}"
     depends_on:
       - db
     env_file:
@@ -21,8 +21,8 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_PASSWORD: ${TEST_DATABASE_PASSWORD}
+      POSTGRES_DB: ${TEST_DATABASE_NAME}
     volumes:
       - postgres_data:/var/lib/postgresql/data
   

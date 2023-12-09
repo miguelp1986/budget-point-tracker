@@ -1,4 +1,4 @@
-name: Test
+name: Tests
 
 on:
   push:
@@ -18,7 +18,32 @@ jobs:
         name: Checkout
         uses: actions/checkout@v4
       -
-        name: Testing
+        name: Run Tests
+        env:
+          TEST_FASTAPI_HOST: ${{ secrets.TEST_FASTAPI_HOST }}
+          TEST_FASTAPI_PORT: ${{ secrets.TEST_FASTAPI_PORT }}
+          TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+          TEST_DATABASE_HOST: ${{ secrets.TEST_DATABASE_HOST }}
+          TEST_DATABASE_USER: ${{ secrets.TEST_DATABASE_USER }}
+          TEST_DATABASE_PORT: ${{ secrets.TEST_DATABASE_PORT }}
+          TEST_DATABASE_PASSWORD: ${{ secrets.TEST_DATABASE_PASSWORD }}
+          TEST_DATABASE_NAME: ${{ secrets.TEST_DATABASE_NAME }}
+          TEST_PYTEST_DATABASE_NAME: ${{ secrets.TEST_PYTEST_DATABASE_NAME }}
+          TEST_DOCKER_IMAGE: ${{ secrets.TEST_DOCKER_IMAGE }}
+          TEST_DOCKER_TAG: ${{ secrets.TEST_DOCKER_TAG }}
         run: |
-          cd $GITHUB_WORKSPACE
+          # Create .env file with environment variables
+          echo "TEST_FASTAPI_HOST=${TEST_FASTAPI_HOST}" >> .env
+          echo "TEST_FASTAPI_PORT=${TEST_FASTAPI_PORT}" >> .env
+          echo "TEST_DATABASE_URL=${TEST_DATABASE_URL}" >> .env
+          echo "TEST_DATABASE_HOST=${TEST_DATABASE_HOST}" >> .env
+          echo "TEST_DATABASE_USER=${TEST_DATABASE_USER}" >> .env
+          echo "TEST_DATABASE_PORT=${TEST_DATABASE_PORT}" >> .env
+          echo "TEST_DATABASE_PASSWORD=${TEST_DATABASE_PASSWORD}" >> .env
+          echo "TEST_DATABASE_NAME=${TEST_DATABASE_NAME}" >> .env
+          echo "TEST_PYTEST_DATABASE_NAME=${TEST_PYTEST_DATABASE_NAME}" >> .env
+          echo "TEST_DOCKER_IMAGE=${TEST_DOCKER_IMAGE}" >> .env
+          echo "TEST_DOCKER_TAG=${TEST_DOCKER_TAG}" >> .env
+
+          # Run tests
           source scripts/test.sh
