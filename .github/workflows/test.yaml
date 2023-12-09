@@ -23,6 +23,7 @@ jobs:
           TEST_FASTAPI_HOST: ${{ secrets.TEST_FASTAPI_HOST }}
           TEST_FASTAPI_PORT: ${{ secrets.TEST_FASTAPI_PORT }}
           TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+          TEST_DATABASE_HOST: ${{ secrets.TEST_DATABASE_HOST }}
           TEST_DATABASE_USER: ${{ secrets.TEST_DATABASE_USER }}
           TEST_DATABASE_PORT: ${{ secrets.TEST_DATABASE_PORT }}
           TEST_DATABASE_PASSWORD: ${{ secrets.TEST_DATABASE_PASSWORD }}
@@ -34,6 +35,7 @@ jobs:
           echo "TEST_FASTAPI_HOST=${TEST_FASTAPI_HOST}" >> .env
           echo "TEST_FASTAPI_PORT=${TEST_FASTAPI_PORT}" >> .env
           echo "TEST_DATABASE_URL=${TEST_DATABASE_URL}" >> .env
+          echo "TEST_DATABASE_HOST=${TEST_DATABASE_HOST}" >> .env
           echo "TEST_DATABASE_USER=${TEST_DATABASE_USER}" >> .env
           echo "TEST_DATABASE_PORT=${TEST_DATABASE_PORT}" >> .env
           echo "TEST_DATABASE_PASSWORD=${TEST_DATABASE_PASSWORD}" >> .env
