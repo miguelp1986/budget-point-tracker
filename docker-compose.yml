@@ -9,7 +9,7 @@ services:
       args:
         - TEST_FASTAPI_PORT
     ports:
-      - "${TEST_FASTAPI_PORT}:${TEST_SFASTAPI_PORT}"
+      - "${TEST_FASTAPI_PORT}:${TEST_FASTAPI_PORT}"
     depends_on:
       - db
     env_file:
