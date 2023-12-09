@@ -45,12 +45,5 @@ jobs:
           echo "TEST_DOCKER_IMAGE=${TEST_DOCKER_IMAGE}" >> .env
           echo "TEST_DOCKER_TAG=${TEST_DOCKER_TAG}" >> .env
 
-          echo User: ${TEST_DATABASE_USER}
-          echo Password: ${TEST_DATABASE_PASSWORD}
-          echo Host: ${TEST_DATABASE_HOST}
-          echo Port: ${TEST_DATABASE_PORT}
-          echo Database: ${TEST_DATABASE_NAME}
-          echo Pytest Database: ${TEST_PYTEST_DATABASE_NAME}
-
           # Run tests
-          # source scripts/test.sh
+          source scripts/test.sh
