@@ -19,4 +19,5 @@ RUN pip3 install --no-cache-dir --upgrade -r /app/requirements.txt
 # Expose the port
 EXPOSE $PORT
 
+# Run application with uvicorn
 CMD uvicorn src.api.api:app --host "${HOST}" --port "${PORT}" --reload
