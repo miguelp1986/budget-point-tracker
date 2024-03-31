@@ -2,17 +2,17 @@
 Tests for DB models
 """
 
-import os
 from datetime import datetime
 
 import pytest
 from sqlmodel import Session, SQLModel, create_engine, select
 
 from src.db.models import Account, Budget, LoyaltyProgram, Transaction, User
+from src.utils.config import get_database_url
 
 # Use test database
-TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
-engine = create_engine(TEST_DATABASE_URL, echo=True)
+DATABASE_URL = get_database_url()
+engine = create_engine(DATABASE_URL, echo=True)
 
 
 @pytest.fixture(name="session", scope="function")
