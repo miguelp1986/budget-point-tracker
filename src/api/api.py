@@ -1,6 +1,4 @@
 from fastapi import Depends, FastAPI, HTTPException
-
-# from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import Session, SQLModel, select
 
 from src.db.database import engine, get_db
