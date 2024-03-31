@@ -265,3 +265,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# test database
+test.db
