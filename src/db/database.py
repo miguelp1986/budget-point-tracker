@@ -4,8 +4,10 @@ Contains the database connection and the session maker.
 
 from sqlmodel import Session, create_engine
 
-# Assuming you're using SQLite for simplicity in this example. Replace the URL with your database connection string.
-DATABASE_URL = "sqlite:///./test.db"
+from src.utils.config import get_database_url
+
+# Using SQLite for now. Change to PostgreSQL in production.
+DATABASE_URL = get_database_url()
 engine = create_engine(
     DATABASE_URL, echo=True, connect_args={"check_same_thread": False}
 )
