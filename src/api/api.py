@@ -3,7 +3,11 @@ from sqlmodel import Session, SQLModel, select
 
 from src.db.database import engine, get_db
 from src.db.models import User
+from src.utils.config import load_env
 from src.utils.logger import get_logger
+
+# Load environment variables
+load_env()
 
 # Get or create logger
 logger = get_logger()

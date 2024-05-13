@@ -8,17 +8,20 @@ import pytest
 from sqlmodel import Session, SQLModel, create_engine, select
 
 from src.db.models import Account, Budget, LoyaltyProgram, Transaction, User
-from src.utils.config import get_database_url
+from src.utils.config import get_pytest_database_url, load_env
+
+# Load environment variables
+load_env()
 
 # Use test database
-DATABASE_URL = get_database_url()
-engine = create_engine(DATABASE_URL, echo=True)
+PYTEST_DATABASE_URL = get_pytest_database_url()
+engine = create_engine(PYTEST_DATABASE_URL, echo=True)
 
 
 @pytest.fixture(name="session", scope="function")
 def session_fixture():
     """
-    Create a clean database for each test case.
+    Create a database session for testing
     """
     # Create all database tables
     SQLModel.metadata.create_all(engine)
