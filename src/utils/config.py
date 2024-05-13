@@ -42,16 +42,19 @@ def get_database_url():
         if not url:
             raise OSError("TEST_DATABASE_URL is not set in testing environment")
         return url
+
     elif env == "production":
         url = os.getenv("PROD_DATABASE_URL")
         if not url:
             raise OSError("PROD_DATABASE_URL is not set in production environment")
         return url
+
     elif env == "development":
         url = os.getenv("DEV_DATABASE_URL")
         if not url:
             raise OSError("DEV_DATABASE_URL is not set in development environment")
         return url
+
     else:
         raise OSError("Unknown environment or ENV variable not set")
 
@@ -61,4 +64,5 @@ def get_pytest_database_url():
     pytest_db_url = os.getenv("PYTEST_DATABASE_URL")
     if not pytest_db_url:
         raise OSError("PYTEST_DATABASE_URL is not set")
+
     return pytest_db_url

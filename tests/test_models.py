@@ -21,7 +21,7 @@ engine = create_engine(PYTEST_DATABASE_URL, echo=True)
 @pytest.fixture(name="session", scope="function")
 def session_fixture():
     """
-    Create a clean database for each test case.
+    Create a database session for testing
     """
     # Create all database tables
     SQLModel.metadata.create_all(engine)
