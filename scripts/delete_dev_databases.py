@@ -3,7 +3,7 @@
 """
 ONLY TO BE USED IN DEVELOPMENT!
 
-This script creates the databases of this applicatoin if they do not exist.
+This script deletes the databases of this applicatoin if they exist.
 """
 
 import os
@@ -14,9 +14,11 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from src.utils.config import load_env
 
 
-def create_database(db_name, db_user, db_password, db_host, db_port):
+def delete_database(
+    db_name: str, db_user: str, db_password: str, db_host: str, db_port: str
+):
     """
-    Create a PostgreSQL database if it does not exist.
+    Delete a PostgreSQL database if it exists.
     """
     conn_info = f"dbname='postgres' user='{db_user}' password='{db_password}' host='{db_host}' port='{db_port}'"
 
@@ -33,12 +35,12 @@ def create_database(db_name, db_user, db_password, db_host, db_port):
             "SELECT 1 FROM pg_catalog.pg_database WHERE datname = %s", (db_name,)
         )
         exists = cur.fetchone()  # returns None if database does not exist
-        if not exists:
-            # execute SQL query to create a database if it does not exist
-            cur.execute(f"CREATE DATABASE {db_name}")
-            print(f"Database {db_name} created successfully.")
+        if exists:
+            # execute SQL query to delete a database if it exists
+            cur.execute(f"DROP DATABASE {db_name}")
+            print(f"Database {db_name} deleted successfully.")
         else:
-            print(f"Database {db_name} already exists.")
+            print(f"Database {db_name} does not exist.")
 
         cur.close()
 
@@ -61,15 +63,15 @@ if __name__ == "__main__":
     db_host = os.getenv("DATABASE_HOST")
     db_port = os.getenv("DATABASE_PORT")
 
+    delete_database(db_name, db_user, db_password, db_host, db_port)
+
     pytest_db_name = os.getenv("PYTEST_DATABASE_NAME")
     pytest_db_user = os.getenv("PYTEST_DATABASE_USER")
     pytest_db_password = os.getenv("PYTEST_DATABASE_PASSWORD")
     pytest_db_host = os.getenv("PYTEST_DATABASE_HOST")
     pytest_db_port = os.getenv("PYTEST_DATABASE_PORT")
 
-    # create the databases if they do not exist
-    create_database(db_name, db_user, db_password, db_host, db_port)
-    create_database(
+    delete_database(
         pytest_db_name,
         pytest_db_user,
         pytest_db_password,
