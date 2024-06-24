@@ -7,7 +7,7 @@ from src.utils.config import load_env
 from src.utils.logger import get_logger
 
 # Load environment variables
-load_env()
+load_env()  # do we need this here?
 
 # Get or create logger
 logger = get_logger()
