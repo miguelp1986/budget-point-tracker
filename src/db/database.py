@@ -11,7 +11,7 @@ load_env()
 
 # create the database engine
 DATABASE_URL = get_database_url()
-engine = create_engine(DATABASE_URL, echo=True)
+engine = create_engine(url=DATABASE_URL, echo=True)
 
 
 def get_db():

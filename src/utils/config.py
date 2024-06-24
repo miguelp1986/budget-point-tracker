@@ -12,8 +12,6 @@ from src.utils.logger import get_logger
 ROOT_DIR = Path(__file__).parent.parent.parent.absolute()
 SOURCE_DIR = Path(__file__).parent.parent.absolute()
 
-print(ROOT_DIR)
-
 # Get or create logger
 logger = get_logger()
 

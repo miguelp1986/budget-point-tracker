@@ -12,6 +12,10 @@ import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 from src.utils.config import load_env
+from src.utils.logger import get_logger
+
+# Get or create logger
+logger = get_logger()
 
 
 def delete_database(
@@ -38,14 +42,14 @@ def delete_database(
         if exists:
             # execute SQL query to delete a database if it exists
             cur.execute(f"DROP DATABASE {db_name}")
-            print(f"Database {db_name} deleted successfully.")
+            logger.info(f"Database {db_name} deleted successfully.")
         else:
-            print(f"Database {db_name} does not exist.")
+            logger.info(f"Database {db_name} does not exist.")
 
         cur.close()
 
     except Exception as e:
-        print(f"An error occurred: {e}")
+        logger.error(f"An error occurred: {e}")
 
     finally:
         if conn:
