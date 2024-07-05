@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import Depends, FastAPI, HTTPException
 from sqlmodel import Session, SQLModel, select
 
@@ -26,8 +28,9 @@ def on_startup():
     SQLModel.metadata.create_all(engine)
 
 
-@app.post("/api/v1/users/register")
+@app.post("/api/v1/users/register", response_model=UserResponse)
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
+    """Register a new user with a username, email, and password"""
     # Check if the user already exists
     existing_user = db.exec(select(User).where(User.username == user.username)).first()
     if existing_user:
@@ -45,6 +48,19 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
     return UserResponse(
         user_id=new_user.user_id, username=new_user.username, email=new_user.email
     )
+
+
+@app.get("/api/v1/users", response_model=List[UserResponse])
+def get_users(db: Session = Depends(get_db)):
+    """
+    Get all users from the database
+    TODO: Authentication, pagination, filtering and sorting
+    """
+    users = db.exec(select(User)).all()
+    return [
+        UserResponse(user_id=user.user_id, username=user.username, email=user.email)
+        for user in users
+    ]
 
 
 @app.get("/")
