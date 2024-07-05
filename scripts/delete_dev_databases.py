@@ -67,14 +67,14 @@ if __name__ == "__main__":
     db_host = os.getenv("DATABASE_HOST")
     db_port = os.getenv("DATABASE_PORT")
 
-    delete_database(db_name, db_user, db_password, db_host, db_port)
-
     pytest_db_name = os.getenv("PYTEST_DATABASE_NAME")
     pytest_db_user = os.getenv("PYTEST_DATABASE_USER")
     pytest_db_password = os.getenv("PYTEST_DATABASE_PASSWORD")
     pytest_db_host = os.getenv("PYTEST_DATABASE_HOST")
     pytest_db_port = os.getenv("PYTEST_DATABASE_PORT")
 
+    # delete databases if they exist
+    delete_database(db_name, db_user, db_password, db_host, db_port)
     delete_database(
         pytest_db_name,
         pytest_db_user,
