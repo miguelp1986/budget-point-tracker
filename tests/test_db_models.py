@@ -7,7 +7,7 @@ from datetime import datetime
 import pytest
 from sqlmodel import Session, SQLModel, create_engine, select
 
-from src.db.models import Account, Budget, LoyaltyProgram, Transaction, User
+from src.models.db_models import Account, Budget, LoyaltyProgram, Transaction, User
 from src.utils.config import get_pytest_database_url, load_env
 
 # Load environment variables

@@ -1,10 +1,17 @@
+"""
+This module contains the API endpoints for user registration, login, and retrieval of user data.
+
+It utilizes the FastAPI framework for building the API and interacts with a database using SQLModel.
+"""
+
 from typing import List
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, status
 from sqlmodel import Session, SQLModel, select
 
 from src.db.database import engine, get_db
-from src.db.models import User, UserCreate, UserResponse
+from src.models.data_models import LoginData, UserCreate, UserResponse
+from src.models.db_models import User
 from src.utils.config import load_env
 from src.utils.logger import get_logger
 
@@ -20,12 +27,19 @@ app = FastAPI()
 @app.on_event("startup")
 def on_startup():
     """
-    TODO: Initial development and testing only
+    TODO: Initial development only
     Use Alembic for migrations in production.
 
     Create the database tables on startup
     """
     SQLModel.metadata.create_all(engine)
+
+
+@app.get("/")
+def read_root():
+    """."""
+    logger.info("Mic check")
+    return {"Mic check": 12}
 
 
 @app.post("/api/v1/users/register", response_model=UserResponse)
@@ -53,7 +67,7 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
 @app.get("/api/v1/users", response_model=List[UserResponse])
 def get_users(db: Session = Depends(get_db)):
     """
-    Get all users from the database
+    Get all users from the database. For admin only
     TODO: Authentication, pagination, filtering and sorting
     """
     users = db.exec(select(User)).all()
@@ -63,8 +77,12 @@ def get_users(db: Session = Depends(get_db)):
     ]
 
 
-@app.get("/")
-def read_root():
-    """."""
-    logger.info("Mic check")
-    return {"Mic check": 12}
+@app.get("/api/v1/user/login")
+def login_user(login_data: LoginData, db: Session = Depends(get_db)):
+    user = db.exec(select(User).where(User.username == login_data.username)).first()
+    if not user or not user.verify_password(login_data.password, user.password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Incorrect username or password",
+        )
+    return {"message": "Login successful"}
