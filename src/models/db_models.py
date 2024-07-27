@@ -1,43 +1,25 @@
 """
-Database Models
+Database models
 """
 
 from datetime import datetime
 from typing import List, Optional
 
 from passlib.context import CryptContext
-from pydantic import EmailStr, StringConstraints
+from pydantic import StringConstraints
 from sqlmodel import Field, Relationship, SQLModel
 from typing_extensions import Annotated
 
-# Create a password context for hashing and verifying passwords
+# create a password context for hashing and verifying passwords
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-class UserBase(SQLModel):
-    """Base User model with fields for user information."""
-
-    username: Annotated[str, StringConstraints(min_length=3, max_length=50)]
-    email: EmailStr  # use for validation in Pydantic models
-
-
-class UserCreate(UserBase):
-    """User model for creating a new user with a password."""
-
-    password: Annotated[str, StringConstraints(min_length=9, max_length=50)]
-
-
-class UserResponse(UserBase):
-    """User model for returning user information."""
-
-    user_id: int
-
-
-class User(UserBase, table=True):
+class User(SQLModel, table=True):
     """User model with fields for user information and relationships to other models."""
 
     user_id: Optional[int] = Field(default=None, primary_key=True)
-    email: str  # use str for the SQLModel/SQLAlchemy model
+    username: Annotated[str, StringConstraints(min_length=3, max_length=50)]
+    email: str  # use str for SQLModel
     password: Annotated[str, StringConstraints(min_length=8, max_length=50)]
 
     # Relationships
