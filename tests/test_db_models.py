@@ -8,13 +8,12 @@ import pytest
 from sqlmodel import Session, SQLModel, create_engine, select
 
 from src.models.db_models import Account, Budget, LoyaltyProgram, Transaction, User
-from src.utils.config import get_pytest_database_url, load_env
+from src.utils.config import Config
 
-# Load environment variables
-load_env()
+config = Config()
 
 # Use test database
-PYTEST_DATABASE_URL = get_pytest_database_url()
+PYTEST_DATABASE_URL = config.pytest_database_url
 engine = create_engine(PYTEST_DATABASE_URL, echo=True)
 
 

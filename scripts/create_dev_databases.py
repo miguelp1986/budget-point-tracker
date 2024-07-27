@@ -11,8 +11,10 @@ import os
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
-from src.utils.config import load_env
+from src.utils.config import Config
 from src.utils.logger import get_logger
+
+config = Config()
 
 # Get or create logger
 logger = get_logger()
@@ -57,9 +59,6 @@ def create_database(
 
 
 if __name__ == "__main__":
-    # load environment variables
-    load_env()
-
     # get database info from environment variables
     db_name = os.getenv("DATABASE_NAME")
     db_user = os.getenv("DATABASE_USER")

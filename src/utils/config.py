@@ -16,36 +16,111 @@ SOURCE_DIR = Path(__file__).parent.parent.absolute()
 logger = get_logger()
 
 
-def load_env():
-    """Load environment variables from .env file"""
-    env_type = os.getenv("ENV_TYPE", "dev")  # Default to 'dev' if not set
+class Config:
+    """
+    Configuration class to manage environment variables
+    """
 
-    # Get the .env file based on the environment. Default to .env.dev
-    env_file = {"prod": ".env.prod", "test": ".env.test", "dev": ".env.dev"}.get(
-        env_type, ".env.dev"
-    )
+    def __init__(self):
+        self.load_env()
 
-    # Build the path to the .env file
-    env_path = ROOT_DIR / env_file
-    logger.debug(f"Loading environment variables from {env_path}")
+    def load_env(self):
+        """Load environment variables from .env file"""
+        env_type = os.getenv("ENV_TYPE", "dev")  # Default to 'dev' if not set
 
-    # Load the .env file
-    load_dotenv(dotenv_path=env_path)
+        # Get the .env file based on the environment. Default to .env.dev
+        env_file = {"prod": ".env.prod", "test": ".env.test", "dev": ".env.dev"}.get(
+            env_type, ".env.dev"
+        )
 
+        # Build the path to the .env file
+        env_path = ROOT_DIR / env_file
+        logger.debug(f"Loading environment variables from {env_path}")
 
-def get_database_url():
-    """Get the database URL based on the environment."""
-    url = os.getenv("DATABASE_URL")
-    if not url:
-        raise OSError("DATABASE_URL is not set in environment")
+        # Load the .env file
+        load_dotenv(dotenv_path=env_path)
 
-    return url
+    @staticmethod
+    def get_env_var(key: str, default: str = None):
+        value = os.getenv(key, default)
+        if value is None:
+            raise ValueError(
+                f"No {key} set for the application and no default value provided"
+            )
+        return value
 
+    @property
+    def fastapi_host(self):
+        return self.get_env_var("FASTAPI_HOST", "0.0.0.0")
 
-def get_pytest_database_url():
-    """Get the test database URL."""
-    pytest_db_url = os.getenv("PYTEST_DATABASE_URL")
-    if not pytest_db_url:
-        raise OSError("PYTEST_DATABASE_URL is not set in environment")
+    @property
+    def fastapi_port(self):
+        return int(self.get_env_var("FASTAPI_PORT", "8000"))
 
-    return pytest_db_url
+    @property
+    def database_url(self):
+        return self.get_env_var("DATABASE_URL")
+
+    @property
+    def database_host(self):
+        return self.get_env_var("DATABASE_HOST", "localhost")
+
+    @property
+    def database_user(self):
+        return self.get_env_var("DATABASE_USER")
+
+    @property
+    def database_port(self):
+        return int(self.get_env_var("DATABASE_PORT", "5432"))
+
+    @property
+    def database_password(self):
+        return self.get_env_var("DATABASE_PASSWORD")
+
+    @property
+    def database_name(self):
+        return self.get_env_var("DATABASE_NAME")
+
+    @property
+    def pytest_database_url(self):
+        return self.get_env_var("PYTEST_DATABASE_URL")
+
+    @property
+    def pytest_database_host(self):
+        return self.get_env_var("PYTEST_DATABASE_HOST", "localhost")
+
+    @property
+    def pytest_database_user(self):
+        return self.get_env_var("PYTEST_DATABASE_USER")
+
+    @property
+    def pytest_database_port(self):
+        return int(self.get_env_var("PYTEST_DATABASE_PORT", "5432"))
+
+    @property
+    def pytest_database_password(self):
+        return self.get_env_var("PYTEST_DATABASE_PASSWORD")
+
+    @property
+    def pytest_database_name(self):
+        return self.get_env_var("PYTEST_DATABASE_NAME")
+
+    @property
+    def docker_image(self):
+        return self.get_env_var("DOCKER_IMAGE")
+
+    @property
+    def docker_tag(self):
+        return self.get_env_var("DOCKER_TAG", "latest")
+
+    @property
+    def secret_key(self):
+        return self.get_env_var("SECRET_KEY")
+
+    @property
+    def algorithm(self):
+        return self.get_env_var("ALGORITHM", "HS256")
+
+    @property
+    def access_token_expire_minutes(self):
+        return int(self.get_env_var("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
