@@ -7,13 +7,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from src.utils.logger import get_logger
-
 ROOT_DIR = Path(__file__).parent.parent.parent.absolute()
-SOURCE_DIR = Path(__file__).parent.parent.absolute()
-
-# Get or create logger
-logger = get_logger()
 
 
 class Config:
@@ -35,7 +29,6 @@ class Config:
 
         # Build the path to the .env file
         env_path = ROOT_DIR / env_file
-        logger.debug(f"Loading environment variables from {env_path}")
 
         # Load the .env file
         load_dotenv(dotenv_path=env_path)

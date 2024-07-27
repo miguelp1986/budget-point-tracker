@@ -4,13 +4,10 @@ Contains the database connection and the session maker.
 
 from sqlmodel import Session, create_engine
 
-from src.utils.config import get_database_url, load_env
-
-# load environment variables
-load_env()
+from src.utils.shared import CONFIG
 
 # create database engine
-DATABASE_URL = get_database_url()
+DATABASE_URL = CONFIG.database_url
 engine = create_engine(url=DATABASE_URL, echo=True)
 
 

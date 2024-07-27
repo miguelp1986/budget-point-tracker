@@ -12,13 +12,7 @@ from sqlmodel import Session, SQLModel, select
 from src.db.database import engine, get_db
 from src.models.data_models import LoginData, UserCreate, UserResponse
 from src.models.db_models import User
-from src.utils.config import Config
-from src.utils.logger import get_logger
-
-config = Config()
-
-# Get or create logger
-logger = get_logger()
+from src.utils.shared import LOGGER
 
 app = FastAPI()
 
@@ -37,7 +31,7 @@ def on_startup():
 @app.get("/")
 def read_root():
     """."""
-    logger.info("Mic check")
+    LOGGER.info("Mic check")
     return {"Mic check": 12}
 
 

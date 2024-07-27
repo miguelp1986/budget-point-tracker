@@ -4,11 +4,6 @@ from typing import Union
 
 import jwt
 
-from src.utils.config import load_env
-
-# Load environment variables
-load_env()
-
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")

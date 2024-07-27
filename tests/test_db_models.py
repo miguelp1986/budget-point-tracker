@@ -8,13 +8,10 @@ import pytest
 from sqlmodel import Session, SQLModel, create_engine, select
 
 from src.models.db_models import Account, Budget, LoyaltyProgram, Transaction, User
-from src.utils.config import Config
-
-config = Config()
+from src.utils.shared import CONFIG
 
 # Use test database
-PYTEST_DATABASE_URL = config.pytest_database_url
-engine = create_engine(PYTEST_DATABASE_URL, echo=True)
+engine = create_engine(CONFIG.pytest_database_url, echo=True)
 
 
 @pytest.fixture(name="session", scope="function")

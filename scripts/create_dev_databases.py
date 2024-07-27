@@ -11,13 +11,7 @@ import os
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
-from src.utils.config import Config
-from src.utils.logger import get_logger
-
-config = Config()
-
-# Get or create logger
-logger = get_logger()
+from src.utils.shared import LOGGER
 
 
 def create_database(
@@ -44,14 +38,14 @@ def create_database(
         if not exists:
             # execute SQL query to create a database if it does not exist
             cur.execute(f"CREATE DATABASE {db_name}")
-            logger.info(f"Database {db_name} created successfully.")
+            LOGGER.info(f"Database {db_name} created successfully.")
         else:
-            logger.info(f"Database {db_name} already exists.")
+            LOGGER.info(f"Database {db_name} already exists.")
 
         cur.close()
 
     except Exception as e:
-        logger.error(f"An error occurred: {e}")
+        LOGGER.error(f"An error occurred: {e}")
 
     finally:
         if conn:
